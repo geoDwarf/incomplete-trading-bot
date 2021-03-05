@@ -346,11 +346,16 @@ class Trader:
 
     def get_last_price(self,stock):
         # this function fetches the last full 1-min candle of Alpaca in a loop
-
+        number_of_times_price_returned_zero  = 0;
         while True:
             try:
                 lastPrice = self.load_historical_data(stock,interval='1Min',limit=1)
                 stock.lastPrice = float(lastPrice.close)
+                if str(stock.lastPrice) == "0.0": # check this
+                    number_of_times_price_returned_zero += 1
+                    self._L.info("number of time price returned zero %s" % number_of_times_price_returned_zero);
+                    self._L.info("last price from load historical data: %s" % str(stock.lastPrice));
+                    continue
                 self._L.info('Last price read ALPACA    : ' + str(stock.lastPrice))
                 return stock.lastPrice
             except:
